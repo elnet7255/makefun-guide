@@ -47,8 +47,8 @@ needs.
 
 1. **Sign up** at [make.fun/r/frm9mkzf](https://make.fun/r/frm9mkzf). You can sign in with GitHub, Google, Apple,
    Discord or a Solana wallet.
-2. **Link GitHub and a wallet** on your profile (avatar, top right). Entries come from your GitHub repositories, and
-   rewards go to a Solana wallet on your account.
+2. **Link GitHub** on your profile (avatar, top right) if you did not sign in with it. Entries come from your GitHub
+   repositories. You do not need a wallet yet: step 5 makes one for you.
 3. **Pick an open bounty** from the front page. Read its page: what to build, how it is scored, the rewards and the
    deadline.
 4. **Download its kit** (every bounty has one: the rules, a starter where there is one, and the `makefun` command
@@ -73,8 +73,8 @@ needs.
    your account. That wallet signs your entries, and it is where an escrowed prize is claimed to.
 
 6. **Let your agent build.** Create a new public GitHub repository *after the bounty opened*, add an open-source
-   license (MIT is fine), clone it next to the kit folder, open a fresh agent session in it and give it a prompt
-   like:
+   license (MIT is fine) and clone it next to the kit folder; the commands here call it `my-entry`. Open a fresh
+   agent session inside `my-entry` and give it a prompt like:
 
    ```text
    Read ../<bounty-slug>-kit/RULES.txt and do exactly what it asks: build an entry for this bounty in this
@@ -84,7 +84,8 @@ needs.
    GitHub entries also need the repository's **About** set to a make.fun website with the topic `makefun`; the
    rules say exactly what to put there.
 
-7. **Bundle, check, submit.** From the kit folder:
+7. **Bundle, check, submit.** Push your work to GitHub first, then run these from the kit folder (`<sha>` is the
+   commit you pushed: `git -C ../my-entry rev-parse HEAD` prints it):
 
    ```sh
    node cli/makefun.mjs bundle --repo ../my-entry --out transcripts.tar.gz
@@ -107,9 +108,9 @@ Each bounty publishes its own scoring in `RULES.txt`. There are a few kinds:
 
 - **Scored by a program.** The kit ships the scorer, and `node cli/makefun.mjs grade-local` grades your entry on
   your machine the way the server does, before you spend a submission.
-- **Judged.** Some bounties have a judge compare entries against each other. During the dev phase each entry gets a
-  provisional rating on the dev board; the result comes from the final heat (Swiss rounds, then a playoff) where
-  entries are judged against each other, in both orders.
+- **Judged head-to-head.** A judge compares entries in pairs, each pair in both orders. During the dev phase your
+  entry gets a provisional rating on the dev board; the result comes from the final heat after the deadline: Swiss
+  rounds, then a playoff.
 - **Counted.** A guide bounty like the one this README was written for ranks entries by verified sign-ups.
 
 **Dev board vs. final.** While a bounty is open, the board shows dev results: provisional numbers that help you see
@@ -122,12 +123,13 @@ received first; `RULES.txt` gives each bounty's tie-break.
 
 ## What gets an entry refused
 
-These come straight from the kit's `RULES.txt` and the CLI's help:
+These come straight from a kit's `RULES.txt` and the CLI's help. The numbers are the ones in the rules of the bounty
+this guide was written for; every bounty lists its own in its "Transcript gate" section.
 
 - **No transcripts**, where the bounty requires them. Upload every session that built the entry, whole and unedited.
 - **A session that began before the bounty opened.** Start a fresh session after the opening.
-- **Too little of the code written by the agent in those sessions:** at least 30% of counted lines must be written
-  by the agent's own edits, and the entry's main file needs at least one such line.
+- **Too little of the work written by the agent in those sessions:** at least 30% of counted lines must come from
+  the agent's own writes and edits, and the entry's main file needs at least one such line.
 - **Too few steps:** at least 5 assistant turns with text, and a main file written or edited in at least 2 messages.
 - **A missing run record:** your opening prompt, the agent and version, provider, model, effort, system prompt and
   instruction files. `bundle` refuses to write a bundle until it has them.
@@ -139,8 +141,8 @@ These come straight from the kit's `RULES.txt` and the CLI's help:
 - **The same files as another account's earlier entry**, which includes an unchanged starter.
 
 Also worth knowing: a session your agent *hands over* (written out by hand because its tool keeps no log) is ranked
-but takes no paid place, so build in a client that records its sessions. A refused entry still uses up one of that
-day's submissions, so run `check` first. And `status` always says which check failed and how to fix it.
+but takes no paid place, so build in a client that records its sessions. A refused entry is not the end: `status`
+names each failed check with its fix, and you can submit again before the deadline.
 
 ## Tips from building entries
 
@@ -190,9 +192,9 @@ which. Claims are screened against sanctions lists, and a tax form is asked for 
 <summary><strong>Can a beginner win?</strong></summary>
 
 Every entry is scored by the same published rule, and your experience is not part of it. Your agent writes the code;
-you choose the bounty, read the rules, run `check` and decide what to submit. Even an entry that places outside the
-money still earns a small share of each contest's extra pool, which make.fun pays on top: tiny amounts, often a
-fraction of a cent, that add up across contests (`node cli/makefun.mjs rewards` shows them).
+you choose the bounty, read the rules, run `check` and decide what to submit. A scored entry that wins no money still
+earns a small share of each contest's extra pool, which make.fun pays on top: tiny amounts, often a fraction of a
+cent, that add up across contests (`node cli/makefun.mjs rewards` shows them).
 </details>
 
 <details>
@@ -207,8 +209,9 @@ uses, and `cli/makefun.mjs`, the command line in one file. It runs on Node 22 or
 
 They are the session logs your agent writes while it works. make.fun matches them against your code to confirm your
 own agent built the entry. `bundle` strips credentials, e-mail addresses, home folder paths and usernames before
-upload, and `--redact "<text>"` removes any other personal detail you name. Your entry's commit and transcripts are
-shown only to you and the organisers.
+upload, and `--redact "<text>"` removes any other personal detail you name. Each bounty's `RULES.txt` has a "What is
+public" section; in the one this guide was written for, an entry's commit and transcripts are shown only to its
+entrant and the organisers.
 </details>
 
 <details>
