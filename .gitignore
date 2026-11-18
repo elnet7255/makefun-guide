@@ -1,0 +1,15 @@
+# Never commit wallets, keys or env files
+*keypair*.json
+wallet.json
+.env
+.env.*
+
+# Transcript bundles are uploaded with an entry, not committed
+transcripts.tar.gz
+*.tar.gz
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
